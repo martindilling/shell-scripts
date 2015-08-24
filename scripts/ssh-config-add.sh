@@ -189,7 +189,7 @@ ${fg_yellow}Options:${reset}
     ${fg_green}    --hostname${reset}    HostName
     ${fg_green}    --identity${reset}    IdentityFile
     ${fg_green}    --user${reset}        User
-    ${fg_green}    --extras${reset}       Extras
+    ${fg_green}    --extras${reset}      Extras
 
 "
 }
