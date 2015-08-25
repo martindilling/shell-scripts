@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 
 
+function alert_backup_header () {
+    if is_backup; then
+        alert_header "Forcing backing up files"
+    else
+        alert_header "Backing up files"
+    fi
+}
+
+function alert_restore_header () {
+    if is_restore; then
+        alert_header "Restoring backed up files"
+    fi
+}
+
 
 # Backup a file
 function file_backup () {
@@ -19,7 +33,7 @@ function file_backup () {
 
     if ! is_backup; then
         if is_file "${newpath}"; then
-            alert_notice "File '${2}' is already backed up."
+            alert_info "File '${2}' is already backed up."
             return 0
         fi
     else
@@ -30,7 +44,7 @@ function file_backup () {
     fi
 
     cat "${2}" > "${newpath}"
-    alert_info "File '${2}' backed up."
+    alert_success "File '${2}' backed up."
 }
 
 # Restore a backed up file
@@ -45,7 +59,7 @@ function file_backup_restore () {
     fullpath="${1}${2}"
 
     if is_not_file "${fullpath}"; then
-        alert_notice "No backup exists."
+        alert_info "No backup exists."
         return 0
     fi
 
@@ -57,5 +71,5 @@ function file_backup_restore () {
         sudo bash -c "cat \"${fullpath}\" > \"${2}\""
     fi
 
-    alert_info "File '${2}' restored from '${fullpath}'."
+    alert_success "File '${2}' restored from '${fullpath}'."
 }

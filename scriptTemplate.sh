@@ -39,13 +39,16 @@ restore=false
 
 # Backup necessary files
 function backupFiles () {
+    alert_backup_header
+    alert_info "No files to backup"
 #    file_backup "${backupsDir}" "$HOME/some-file"
-    echo -n
 }
 
 # Restore backup if the --restore option is set
 function restoreFiles () {
     if is_restore; then
+        alert_restore_header
+        alert_info "No files to restore"
 #        file_backup_restore "${backupsDir}" "$HOME/some-file"
         safeExit
     fi
@@ -59,6 +62,7 @@ function mainScript() {
 
 
 
+    alert_header "Running script template"
     echo "${example_option}"
 
 

@@ -35,7 +35,7 @@ function add_header_to_file () {
     fi
 
     if ! grep -q ${2} ${1}; then
-        alert_info "Writing header line"
+        alert_success "Writing header line"
         append_to_file "${1}" "\n\n"
         append_to_file "${1}" "${2}"
         append_to_file "${1}" "\n"
@@ -63,7 +63,7 @@ function add_entry_to_file () {
     fi
 
     if pcregrep -M -q "${2}" ${1}; then
-        alert_notice "Entry already added"
+        alert_info "Entry already added"
     else
         append_to_file "${1}" "${2}"
         alert_success "Added entry to '${1}': \n${2}"

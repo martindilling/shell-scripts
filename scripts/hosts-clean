@@ -39,12 +39,14 @@ restore=false
 
 # Backup necessary files
 function backupFiles () {
+    alert_backup_header
     file_backup "${backupsDir}" "/etc/hosts"
 }
 
 # Restore backup if the --restore option is set
 function restoreFiles () {
     if is_restore; then
+        alert_restore_header
         file_backup_restore "${backupsDir}" "/etc/hosts"
         safeExit
     fi
@@ -57,6 +59,8 @@ function mainScript() {
 ####################################################
 
 
+
+    alert_header "Cleaning host file"
 
     # Config file to update
     hostsFile="/etc/hosts"
