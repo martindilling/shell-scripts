@@ -4,10 +4,10 @@
 # Alert styles
 alert_emergency_style="${bold}${reverse}${fg_red}"
 alert_error_style="${bold}${fg_red}"
-alert_warning_style="${bold}${fg_yellow}"
-alert_success_style="${bold}${fg_green}"
+alert_warning_style="${fg_yellow}"
+alert_success_style="${fg_green}"
 alert_debug_style="${fg_magenta}"
-alert_header_style="${bold}${fg_cyan}"
+alert_header_style="${fg_cyan}"
 alert_input_style="${bold}"
 alert_notice_style="${fg_yellow}"
 alert_info_style="${fg_lightblue}"
