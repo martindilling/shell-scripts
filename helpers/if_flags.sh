@@ -79,6 +79,20 @@ function is_not_debug() {
     return 1
 }
 
+function is_logging() {
+    if [[ "${printLog}" = "true" ]] || [ ${printLog} == "1" ]; then
+        return 0
+    fi
+    return 1
+}
+
+function is_not_logging() {
+    if [[ "${printLog}" = "false" ]] || [ ${printLog} == "0" ]; then
+        return 0
+    fi
+    return 1
+}
+
 function is_backup() {
     if [[ "${backup}" = "true" ]] || [ ${backup} == "1" ]; then
         return 0

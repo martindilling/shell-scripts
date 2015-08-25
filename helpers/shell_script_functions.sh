@@ -43,4 +43,4 @@ tmpDir="/tmp/${scriptName}.$RANDOM.$RANDOM.$RANDOM.$$"
 # -----------------------------------
 # Log is only used when the '-l' flag is set.
 # -----------------------------------
-logFile="$HOME/.shell-script-logs/${scriptBasename}.log"
+logFile="${scriptPath}/../logs/${scriptBasename}.log"

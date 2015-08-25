@@ -25,19 +25,29 @@ function alert() {
         local _color="${3}"
     fi
 
-    # Stop now if we should be quiet
-    if is_quiet; then
-        return
-    fi
-
     # Line parts:     Style                  Content                  Reset style
     local _timestamp=("${bg_white}"          "[$(date +"%T")]"        "${reset}")
     local      _type=("${bg_white}${_color}" "$(printf "[%9s]" ${1})" "${reset}")
     local   _message=("${_color} "           "${2}"                   "${reset}")
 
-    # Print the full alert line
     IFS="" # Join arrays with this character
-    echo -e "${_timestamp[*]}${_type[*]}${_message[*]}"
+    local _line="${_timestamp[*]}${_type[*]}${_message[*]}"
+
+    # Print to log file
+    if is_logging; then
+        if is_file "${logFile}"; then
+            mkdir -p "$(dirname ${logFile})" && touch "${logFile}"
+        fi
+        echo -e "[$(date +"%F %T")] $(printf "[%9s]" ${1}) ${2}" >> "${logFile}";
+    fi
+
+    # Stop now if we should be quiet
+    if is_quiet; then
+        return
+    fi
+
+    # Print the full alert line
+    echo -e "${_line}"
 }
 
 
