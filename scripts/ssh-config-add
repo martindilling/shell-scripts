@@ -103,14 +103,15 @@ homebrewDependencies=()
 caskDependencies=()
 gemDependencies=()
 
+# Backup necessary files
 function backupFiles () {
     file_backup "${backupsDir}" "$HOME/.ssh/config"
 }
 
+# Restore backup if the --restore option is set
 function restoreFiles () {
     if is_restore; then
         file_backup_restore "${backupsDir}" "$HOME/.ssh/config"
-        alert_success "Files restored."
         safeExit
     fi
 }
@@ -120,6 +121,8 @@ function mainScript() {
     backupFiles
 ############## Begin Script Here ###################
 ####################################################
+
+
 
     # Config file to update
     sshConfigFile="$HOME/.ssh/config"
