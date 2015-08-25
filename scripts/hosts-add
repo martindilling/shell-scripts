@@ -1,59 +1,25 @@
 #!/usr/bin/env bash
 
 # ##################################################
-# hosts-add
 #
-version="1.0.0"
-#
+__name="hosts-add"
+__version="1.0.0"
+__description="Add a new entry to the hosts file."
+__usage="[options] --ip --host"
 #
 # ##################################################
 
 # Provide a variable with the location of this script.
 scriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Source Scripting Utilities
-# -----------------------------------
-# These shared utilities provide many functions which are needed to provide
-# the functionality in this boilerplate. This script will fail if they can
-# not be found.
-# -----------------------------------
-
-helperScript="${scriptPath}/shell-helpers.sh" # Update this path to find the utilities.
-
+# Include helper scripts
+helperScript="${scriptPath}/shell-helpers.sh"
 if [ -f "${helperScript}" ]; then
     source "${helperScript}"
 else
     echo "Please find the file shell-helpers.sh and add a reference to it in this script. Exiting."
     exit 1
 fi
-
-# trapCleanup Function
-# -----------------------------------
-# Any actions that should be taken if the script is prematurely
-# exited.  Always call this function at the top of your script.
-# -----------------------------------
-function trapCleanup() {
-  echo ""
-  # Delete temp files, if any
-  if is_dir "${tmpDir}"; then
-    rm -r "${tmpDir}"
-  fi
-  alert_die "Exit trapped."  # Edit this if you like.
-}
-
-# safeExit
-# -----------------------------------
-# Non destructive exit for when script exits naturally.
-# Usage: Add this function at the end of every script.
-# -----------------------------------
-function safeExit() {
-  # Delete temp files, if any
-  if is_dir "${tmpDir}"; then
-    rm -r "${tmpDir}"
-  fi
-  trap - INT TERM EXIT
-  exit
-}
 
 # Set Flags
 # -----------------------------------
@@ -70,38 +36,6 @@ args=()
 
 backup=false
 restore=false
-
-# Set Temp Directory
-# -----------------------------------
-# Create temp directory with three random numbers and the process ID
-# in the name.  This directory is removed automatically at exit.
-# -----------------------------------
-tmpDir="/tmp/${scriptName}.$RANDOM.$RANDOM.$RANDOM.$$"
-(umask 077 && mkdir "${tmpDir}") || {
-  alert_die "Could not create temporary directory! Exiting."
-}
-
-# Logging
-# -----------------------------------
-# Log is only used when the '-l' flag is set.
-#
-# To never save a logfile change variable to '/dev/null'
-# Save to Desktop use: $HOME/Desktop/${scriptBasename}.log
-# Save to standard user log location use: $HOME/Library/Logs/${scriptBasename}.log
-# -----------------------------------
-logFile="$HOME/.shell-script-logs/${scriptBasename}.log"
-
-# Check for Dependencies
-# -----------------------------------
-# Arrays containing package dependencies needed to execute this script.
-# The script will fail if dependencies are not installed.  For Mac users,
-# most dependencies can be installed automatically using the package
-# manager 'Homebrew'.  Mac applications will be installed using
-# Homebrew Casks. Ruby and gems via RVM.
-# -----------------------------------
-homebrewDependencies=()
-caskDependencies=()
-gemDependencies=()
 
 # Backup necessary files
 function backupFiles () {
@@ -149,30 +83,30 @@ function mainScript() {
 # Print usage
 usage() {
   echo -e -n "
-${fg_green}${scriptName}${reset} version ${fg_yellow}${version}${reset}
+${fg_green}${__name}${reset} version ${fg_yellow}${__version}${reset}
 
-Add a new entry to the hosts file.
+${__description}
 
 ${fg_yellow}Usage:${reset}
-  ${scriptBasename} [options] --ip --host
+  ${scriptBasename} ${__usage}
 
 ${fg_yellow}Default options:${reset}
-    ${fg_green}    --force${reset}       Skip all user interaction.  Implied 'Yes' to all actions.
-    ${fg_green}-q, --quiet${reset}       Don't print any output
-    ${fg_green}-l, --log${reset}         Print output to logfile
-    ${fg_green}-s, --strict${reset}      Exit script with null variables.  i.e 'set -o nounset'
-    ${fg_green}-v, --verbose${reset}     Output more information.
-    ${fg_green}-d, --debug${reset}       Runs script in BASH debug mode (set -x)
-    ${fg_green}-h, --help${reset}        Display this help and exit
-    ${fg_green}    --version${reset}     Output version information and exit
+  ${fg_green}    --force${reset}       Skip all user interaction.  Implied 'Yes' to all actions.
+  ${fg_green}-q, --quiet${reset}       Don't print any output
+  ${fg_green}-l, --log${reset}         Print output to logfile
+  ${fg_green}-s, --strict${reset}      Exit script with null variables.  i.e 'set -o nounset'
+  ${fg_green}-v, --verbose${reset}     Output more information.
+  ${fg_green}-d, --debug${reset}       Runs script in BASH debug mode (set -x)
+  ${fg_green}-h, --help${reset}        Display this help and exit
+  ${fg_green}    --version${reset}     Output version information and exit
 
 ${fg_yellow}Backup options:${reset}
-    ${fg_green}    --backup${reset}      Backup and overwrite previous backup (Auto backup on first run)
-    ${fg_green}    --restore${reset}     Restore backup (Doesn't run script only restores)
+  ${fg_green}    --backup${reset}      Backup and overwrite previous backup (Auto backup on first run)
+  ${fg_green}    --restore${reset}     Restore backup (Doesn't run script only restores)
 
 ${fg_yellow}Options:${reset}
-    ${fg_green}    --ip${reset}          IP                      (example: \"192.168.10.25\")
-    ${fg_green}    --host${reset}        Host                    (example: \"example.dev\")
+  ${fg_green}    --ip${reset}          IP                      (example: \"192.168.10.25\")
+  ${fg_green}    --host${reset}        Host                    (example: \"example.dev\")
 
 "
 }
