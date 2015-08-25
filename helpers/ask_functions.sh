@@ -19,10 +19,11 @@
 
 # Ask the question
 function seek_confirmation() {
-    alert_input "${@} (y/n):"
+    alert_input "${@}"
     if is_force; then
         alert_notice "Forcing confirmation with '--force' flag set"
     else
+        echo -n "(y/n):"
         read REPLY
         if [[ ! "${REPLY}" =~ ^[YyNn]$ ]]; then
             alert_warning "'${REPLY}' is not an accepted answer."
