@@ -3,6 +3,26 @@
 
 
 # Append a header to a file if it doesn't exist
+function append_to_file () {
+    if is_empty "${1}"; then
+        alert_die "File must be given as first parameter to 'append_to_file'."
+    fi
+    if is_not_file "${1}"; then
+        alert_die "File given as first parameter to 'append_to_file' must exists and be a file."
+    fi
+    if is_empty "${2}"; then
+        alert_die "String must be given as second parameter to 'append_to_file'."
+    fi
+
+    if is_sudo; then
+        echo -e "${2}" >> "${1}"
+    else
+        needSudo
+        sudo bash -c "echo -e \"${2}\" >> \"${1}\""
+    fi
+}
+
+# Append a header to a file if it doesn't exist
 function add_header_to_file () {
     if is_empty "${1}"; then
         alert_die "File must be given as first parameter to 'add_header_to_file'."
@@ -16,8 +36,9 @@ function add_header_to_file () {
 
     if ! grep -q ${2} ${1}; then
         alert_info "Writing header line"
-        echo -e "\n\n" >> ${1}
-        echo "${2}" >> ${1}
+        append_to_file "${1}" "\n\n"
+        append_to_file "${1}" "${2}"
+        append_to_file "${1}" "\n"
     fi
 }
 
@@ -44,8 +65,7 @@ function add_entry_to_file () {
     if pcregrep -M -q "${2}" ${1}; then
         alert_notice "Entry already added"
     else
-        echo -e "\n" >> ${1}
-        echo "${2}" >> ${1}
+        append_to_file "${1}" "${2}"
         alert_success "Added entry to '${1}': \n${2}"
     fi
 }
