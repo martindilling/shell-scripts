@@ -14,7 +14,7 @@ function append_to_file () {
         alert_die "String must be given as second parameter to 'append_to_file'."
     fi
 
-    if is_sudo; then
+    if is_write_access "${1}"; then
         echo -e "${2}" >> "${1}"
     else
         needSudo

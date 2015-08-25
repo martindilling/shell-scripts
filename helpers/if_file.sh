@@ -17,10 +17,7 @@ function is_exists() {
 }
 
 function is_not_exists() {
-    if [[ ! -e "$1" ]]; then
-        return 0
-    fi
-    return 1
+    return $( ! is_exists "$1")
 }
 
 function is_file() {
@@ -31,10 +28,7 @@ function is_file() {
 }
 
 function is_not_file() {
-    if [[ ! -f "$1" ]]; then
-        return 0
-    fi
-    return 1
+    return $( ! is_file "$1")
 }
 
 function is_dir() {
@@ -45,10 +39,7 @@ function is_dir() {
 }
 
 function is_not_dir() {
-    if [[ ! -d "$1" ]]; then
-        return 0
-    fi
-    return 1
+    return $( ! is_dir "$1")
 }
 
 function is_symlink() {
@@ -59,10 +50,7 @@ function is_symlink() {
 }
 
 function is_not_symlink() {
-    if [[ ! -L "$1" ]]; then
-        return 0
-    fi
-    return 1
+    return $( ! is_symlink "$1")
 }
 
 function is_empty() {
@@ -77,4 +65,15 @@ function is_not_empty() {
         return 0
     fi
     return 1
+}
+
+function is_write_access() {
+    if [[ -w "$1" ]]; then
+        return 0
+    fi
+    return 1
+}
+
+function is_not_write_access() {
+    return $( ! is_write_access "$1")
 }

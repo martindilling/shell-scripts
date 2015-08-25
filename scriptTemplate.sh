@@ -69,6 +69,9 @@ strict=false
 debug=false
 args=()
 
+backup=false
+restore=false
+
 # Set Temp Directory
 # -----------------------------------
 # Create temp directory with three random numbers and the process ID
@@ -101,7 +104,23 @@ homebrewDependencies=()
 caskDependencies=()
 gemDependencies=()
 
+# Backup necessary files
+function backupFiles () {
+#    file_backup "${backupsDir}" "$HOME/.ssh/config"
+    echo -n
+}
+
+# Restore backup if the --restore option is set
+function restoreFiles () {
+    if is_restore; then
+#        file_backup_restore "${backupsDir}" "$HOME/.ssh/config"
+        safeExit
+    fi
+}
+
 function mainScript() {
+    restoreFiles
+    backupFiles
 ############## Begin Script Here ###################
 ####################################################
 
@@ -142,6 +161,10 @@ ${fg_yellow}Default options:${reset}
     ${fg_green}-d, --debug${reset}       Runs script in BASH debug mode (set -x)
     ${fg_green}-h, --help${reset}        Display this help and exit
     ${fg_green}    --version${reset}     Output version information and exit
+
+${fg_yellow}Backup options:${reset}
+    ${fg_green}    --backup${reset}      Backup and overwrite previous backup (Auto backup on first run)
+    ${fg_green}    --restore${reset}     Restore backup (Doesn't run script only restores)
 
 ${fg_yellow}Options:${reset}
     ${fg_green}    --host${reset}        Host
@@ -202,6 +225,10 @@ while [[ $1 = -?* ]]; do
     -h|--help) usage >&2; safeExit ;;
     --version) echo "$(basename $0) ${version}"; safeExit ;;
     --endopts) shift; break ;;
+
+    # Backup options
+    --backup) backup=true ;;
+    --restore) restore=true ;;
 
     # Script options
     --host) shift; host="${1}" ;;

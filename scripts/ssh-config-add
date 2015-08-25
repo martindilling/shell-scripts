@@ -68,6 +68,9 @@ strict=false
 debug=false
 args=()
 
+backup=false
+restore=false
+
 # Set Temp Directory
 # -----------------------------------
 # Create temp directory with three random numbers and the process ID
@@ -100,11 +103,23 @@ homebrewDependencies=()
 caskDependencies=()
 gemDependencies=()
 
+function backupFiles () {
+    file_backup "${backupsDir}" "$HOME/.ssh/config"
+}
+
+function restoreFiles () {
+    if is_restore; then
+        file_backup_restore "${backupsDir}" "$HOME/.ssh/config"
+        alert_success "Files restored."
+        safeExit
+    fi
+}
+
 function mainScript() {
+    restoreFiles
+    backupFiles
 ############## Begin Script Here ###################
 ####################################################
-
-
 
     # Config file to update
     sshConfigFile="$HOME/.ssh/config"
@@ -115,8 +130,8 @@ function mainScript() {
     # Array with information from options
     lines=(
         "Host: ${host}"
-        "HostName: ${hostName}"
-        "IdentityFile: ${identityFile}"
+        "HostName: ${hostname}"
+        "IdentityFile: ${identity}"
         "User: ${user}"
     );
 
@@ -131,7 +146,7 @@ function mainScript() {
     # Create string from the array with lines
     entry="`printf '%s\n' "${lines[@]}"`"
 
-    add_entry_to_file "${sshConfigFile}" "${entry}"
+    add_entry_to_file "${sshConfigFile}" "${entry}\n"
 
 
 
@@ -162,12 +177,16 @@ ${fg_yellow}Default options:${reset}
     ${fg_green}-h, --help${reset}        Display this help and exit
     ${fg_green}    --version${reset}     Output version information and exit
 
+${fg_yellow}Backup options:${reset}
+    ${fg_green}    --backup${reset}      Backup and overwrite previous backup (Auto backup on first run)
+    ${fg_green}    --restore${reset}     Restore backup (Doesn't run script only restores)
+
 ${fg_yellow}Options:${reset}
-    ${fg_green}    --host${reset}        Host                    (example: \"vagrantvm\")
-    ${fg_green}    --hostname${reset}    HostName                (example: \"192.168.10.25\")
-    ${fg_green}    --identity${reset}    IdentityFile            (example: \"~/.ssh/id_rsa\")
-    ${fg_green}    --user${reset}        User                    (example: \"vagrant\")
-    ${fg_green}    --extras${reset}      Comma seperated extras  (example: \"Port 2222,Protocol 2\")
+    ${fg_green}    --host${reset}        Host                                  (example: \"vagrantvm\")
+    ${fg_green}    --hostname${reset}    HostName                              (example: \"192.168.10.25\")
+    ${fg_green}    --identity${reset}    IdentityFile                          (example: \"~/.ssh/id_rsa\")
+    ${fg_green}    --user${reset}        User                                  (example: \"vagrant\")
+    ${fg_green}    --extras${reset}      Comma seperated extras                (example: \"Port 2222,Protocol 2\")
 
 "
 }
@@ -226,10 +245,14 @@ while [[ $1 = -?* ]]; do
     --version) echo "$(basename $0) ${version}"; safeExit ;;
     --endopts) shift; break ;;
 
+    # Backup options
+    --backup) backup=true ;;
+    --restore) restore=true ;;
+
     # Script options
     --host) shift; host="${1}" ;;
-    --hostname) shift; hostName="${1}" ;;
-    --identity) shift; identityFile="${1}" ;;
+    --hostname) shift; hostname="${1}" ;;
+    --identity) shift; identity="${1}" ;;
     --user) shift; user="${1}" ;;
     --extras) shift; extras="${1}" ;;
 

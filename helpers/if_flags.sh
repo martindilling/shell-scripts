@@ -78,3 +78,31 @@ function is_not_debug() {
     fi
     return 1
 }
+
+function is_backup() {
+    if [[ "${backup}" = "true" ]] || [ ${backup} == "1" ]; then
+        return 0
+    fi
+    return 1
+}
+
+function is_not_backup() {
+    if [[ "${backup}" = "false" ]] || [ ${backup} == "0" ]; then
+        return 0
+    fi
+    return 1
+}
+
+function is_restore() {
+    if [[ "${restore}" = "true" ]] || [ ${restore} == "1" ]; then
+        return 0
+    fi
+    return 1
+}
+
+function is_not_restore() {
+    if [[ "${restore}" = "false" ]] || [ ${restore} == "0" ]; then
+        return 0
+    fi
+    return 1
+}
