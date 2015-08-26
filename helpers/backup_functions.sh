@@ -1,28 +1,14 @@
 #!/usr/bin/env bash
 
 
-function alert_backup_header () {
-    if is_backup; then
-        alert_header "Forcing backing up files"
-    else
-        alert_header "Backing up files"
-    fi
-}
-
-function alert_restore_header () {
-    if is_restore; then
-        alert_header "Restoring backed up files"
-    fi
-}
-
-
 # Backup a file
 function file_backup () {
     if is_empty "${1}"; then
         alert_die "Backup path must be given as first parameter to 'file_backup'."
     fi
     if is_not_file "${2}"; then
-        alert_die "File given as second parameter to 'file_backup' must exists and be a file."
+        alert_error "File '${2}' could not be found. Not backed up."
+        return 0
     fi
 
     newpath="${1}${2}"
@@ -40,6 +26,7 @@ function file_backup () {
         if is_file "${newpath}"; then
             newbackuppath="$(dirname ${newpath})/${timestamp}_$(basename ${newpath})"
             mv ${newpath} ${newbackuppath}
+            alert_info "Backupfile '$(basename ${newpath})' renamed to '$(basename ${newbackuppath})'."
         fi
     fi
 
@@ -53,7 +40,8 @@ function file_backup_restore () {
         alert_die "Backup path must be given as first parameter to 'file_backup'."
     fi
     if is_not_file "${2}"; then
-        alert_die "File given as second parameter to 'file_backup' must exists and be a file."
+        alert_error "File '${2}' could not be found. Can't restore file that doesn't already exist."
+        return 0
     fi
 
     fullpath="${1}${2}"
@@ -71,5 +59,7 @@ function file_backup_restore () {
         sudo bash -c "cat \"${fullpath}\" > \"${2}\""
     fi
 
-    alert_success "File '${2}' restored from '${fullpath}'."
+    realpath="$(cd "$(dirname ${fullpath})";pwd)/$(basename ${fullpath})"
+
+    alert_success "File '${2}' restored from '${realpath}'."
 }

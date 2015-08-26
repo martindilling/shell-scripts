@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-# ##################################################
+###############################################################################
 #
 __name="Script Template"
 __version="1.0.0"
 __description="Copy this file and edit it."
-__usage="[options] --example-option"
+__usage="[options] -e|--example-option --another-option"
 #
-# ##################################################
+###############################################################################
 
-# Provide a variable with the location of this script.
+# Path of this script
 scriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Include helper scripts
@@ -20,6 +20,7 @@ else
     echo "Please find the file shell-helpers.sh and add a reference to it in this script. Exiting."
     exit 1
 fi
+
 
 # Set Flags
 # -----------------------------------
@@ -32,49 +33,45 @@ verbose=false
 force=false
 strict=false
 debug=false
+backup=false
 args=()
 
-backup=false
-restore=false
 
-# Backup necessary files
-function backupFiles () {
-    alert_backup_header
-    alert_info "No files to backup"
-#    file_backup "${backupsDir}" "$HOME/some-file"
-}
+# Backup
+# -----------------------------------
+# List of files handled by the backup and restore functionality.
+# Files will always be backed up the first time the script is
+# executed, after that you need to manually add --backup to
+# backup the current state of the files.
+# -----------------------------------
+filesToBackup=(
+    "$HOME/.zshrc"
+)
 
-# Restore backup if the --restore option is set
-function restoreFiles () {
-    if is_restore; then
-        alert_restore_header
-        alert_info "No files to restore"
-#        file_backup_restore "${backupsDir}" "$HOME/some-file"
-        safeExit
-    fi
-}
 
 function mainScript() {
-    restoreFiles
-    backupFiles
-############## Begin Script Here ###################
-####################################################
+  # ## ### ################################# ### ## #
+ # ## ### ####        BEGIN SCRIPT       #### ### ## #
+# ## ### ##################################### ### ## #
 
 
 
     alert_header "Running script template"
-    echo "${example_option}"
+    alert_info "${example_option}"
+    alert_info "${another_example}"
 
 
 
-####################################################
-############### End Script Here ####################
+# ## ### ##################################### ### ## #
+ # ## ### ####         END SCRIPT        #### ### ## #
+  # ## ### ################################# ### ## #
 }
 
-############## Begin Options and Usage ###################
 
-
-# Print usage
+# Usage
+# -----------------------------------
+# Information about how to use the script
+# -----------------------------------
 usage() {
   echo -e -n "
 ${fg_green}${__name}${reset} version ${fg_yellow}${__version}${reset}
@@ -99,52 +96,28 @@ ${fg_yellow}Backup options:${reset}
   ${fg_green}    --restore${reset}     Restore backup (Doesn't run script only restores)
 
 ${fg_yellow}Options:${reset}
-  ${fg_green}    --example-option${reset}   Host
+  ${fg_green}-e, --example-option${reset}   Example option with shortcut
+  ${fg_green}    --another-example${reset}  Another example option
 
 "
 }
 
-# Iterate over options breaking -ab into -a -b when needed and --foo=bar into
-# --foo bar
-optstring=h
-unset options
-while (($#)); do
-  case $1 in
-    # If option is of type -ab
-    -[!-]?*)
-      # Loop over each character starting with the second
-      for ((i=1; i < ${#1}; i++)); do
-        c=${1:i:1}
 
-        # Add current char to options
-        options+=("-$c")
+# Iterate over options breaking `-ab` into `-a -b` when needed and `--foo=bar` into  `--foo bar`
+parseOptions
 
-        # If option takes a required argument, and it's not the last char make
-        # the rest of the string its argument
-        if [[ $optstring = *"$c:"* && ${1:i+1} ]]; then
-          options+=("${1:i+1}")
-          break
-        fi
-      done
-      ;;
-
-    # If option is of type --foo=bar
-    --?*=*) options+=("${1%%=*}" "${1#*=}") ;;
-    # add --endopts for --
-    --) options+=(--endopts) ;;
-    # Otherwise, nothing special
-    *) options+=("$1") ;;
-  esac
-  shift
-done
-set -- "${options[@]}"
-unset options
 
 # Print help if no arguments were passed.
+# -----------------------------------
 # Uncomment to force arguments when invoking the script
+# -----------------------------------
 # [[ $# -eq 0 ]] && set -- "--help"
 
-# Read the options and set stuff
+
+# Options
+# -----------------------------------
+# How are we handling the options given
+# -----------------------------------
 while [[ $1 = -?* ]]; do
   case $1 in
     # Default options
@@ -160,10 +133,11 @@ while [[ $1 = -?* ]]; do
 
     # Backup options
     --backup) backup=true ;;
-    --restore) restore=true ;;
+    --restore) restoreFiles; safeExit ;;
 
     # Script options
-    --example-option) shift; example_option="${1}" ;;
+    -e|--example-option) shift; example_option="${1}" ;;
+    --another-example) shift; another_example="${1}" ;;
 
     # Invalid option
     *) alert_die "invalid option: '$1'." ;;
@@ -171,45 +145,14 @@ while [[ $1 = -?* ]]; do
   shift
 done
 
+
 # Store the remaining part as arguments.
 args+=("$@")
 
-############## End Options and Usage ###################
 
 
+# ## ### ##################################### ### ## #
+ # ## ### ####    EXECUTE THE SCRIPT     #### ### ## #
+# ## ### ##################################### ### ## #
 
-
-# ############# ############# #############
-# ##       TIME TO RUN THE SCRIPT        ##
-# ##                                     ##
-# ## You shouldn't need to edit anything ##
-# ## beneath this line                   ##
-# ##                                     ##
-# ############# ############# #############
-
-# Trap bad exits with your cleanup function
-trap trapCleanup EXIT INT TERM
-
-# Set IFS to preferred implementation
-IFS=$'\n\t'
-
-# Exit on error. Append '||true' when you run the script if you expect an error.
-set -o errexit
-
-# Run in debug mode, if set
-if ${debug}; then set -x ; fi
-
-# Exit on empty variable
-if ${strict}; then set -o nounset ; fi
-
-# Bash will remember & return the highest exitcode in a chain of pipes.
-# This way you can catch the error in case mysqldump fails in `mysqldump |gzip`, for example.
-set -o pipefail
-
-# Invoke the checkDependenices function to test for Bash packages.  Uncomment if needed.
-# checkDependencies
-
-# Run your script
-mainScript
-
-safeExit # Exit cleanly
+executeScript
