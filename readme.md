@@ -16,19 +16,19 @@ Hopefully this could end up as a collection of helpful shell scripts :)
 
 ## Options
 
-| Option         | Description                                                      |
-|----------------|------------------------------------------------------------------|
-| `   --force`   | Skip all user interaction. Implied 'Yes' to all actions.        |
-| `-q|--quiet`   | Don't print any output                                           |
-| `-l|--log`     | Print output to logfile                                          |
-| `-s|--strict`  | Exit script with null variables.  i.e 'set -o nounset'           |
-| `-v|--verbose` | Output more information.                                         |
-| `-d|--debug`   | Runs script in BASH debug mode (set -x)                          |
-| `-h|--help`    | Display this help and exit                                       |
-| `   --version` | Output version information and exit                              |
+| Option              | Description                                                      |
+|---------------------|------------------------------------------------------------------|
+| `   --force`        | Skip all user interaction. Implied 'Yes' to all actions.        |
+| `-q&#124;--quiet`   | Don't print any output                                           |
+| `-l&#124;--log`     | Print output to logfile                                          |
+| `-s&#124;--strict`  | Exit script with null variables.  i.e 'set -o nounset'           |
+| `-v&#124;--verbose` | Output more information.                                         |
+| `-d&#124;--debug`   | Runs script in BASH debug mode (set -x)                          |
+| `-h&#124;--help`    | Display this help and exit                                       |
+| `   --version`      | Output version information and exit                              |
 | | |
-| `   --backup`  | Backup and overwrite previous backup (Auto backup on first run)  |
-| `   --restore` | Restore backup (Doesn't run script only restores)                |
+| `   --backup`       | Backup and overwrite previous backup (Auto backup on first run)  |
+| `   --restore`      | Restore backup (Doesn't run script only restores)                |
 
 
 # Credits
