@@ -4,7 +4,7 @@
 scriptName=`basename $0`
 scriptBasename="$(basename ${scriptName} .sh)"
 
-backupsDir="${scriptPath}/../backups/${scriptBasename}"
+backupsDir="${DIR}/backups/${scriptBasename}"
 
 # Timestamps
 now=$(date +"%F %T")              # Returns: 2015-08-24 15:44:02
