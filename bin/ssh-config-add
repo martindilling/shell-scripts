@@ -13,7 +13,7 @@ __usage="[options] --host --hostname --identity --user [--extras]"
 scriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Include helper scripts
-helperScript="${scriptPath}/shell-helpers.sh"
+helperScript="${scriptPath}/../shell-helpers.sh"
 if [ -f "${helperScript}" ]; then
     source "${helperScript}"
 else
